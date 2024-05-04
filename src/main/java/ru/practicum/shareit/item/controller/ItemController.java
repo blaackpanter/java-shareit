@@ -16,6 +16,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,6 +84,9 @@ public class ItemController {
 
     @GetMapping("search")
     public List<ItemDto> searchAvailableItems(@RequestParam("text") String text) {
+        if (text == null || text.isBlank()) {
+            return Collections.emptyList();
+        }
         return itemService.searchAvailableItems(text)
                 .stream()
                 .map(itemMapper::toDto)

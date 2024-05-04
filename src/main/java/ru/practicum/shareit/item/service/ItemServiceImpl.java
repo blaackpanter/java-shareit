@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
@@ -10,6 +11,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +39,11 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(Item item) {
-        if (isExist(item.getId())) {
+        Optional<Item> prev = itemRepository.getItem(item.getId());
+        if (prev.isPresent()) {
+            if (prev.get().getOwnerId() != item.getOwnerId()) {
+                throw new WrongOwnerIdException(String.format("Only owner can update item with id %s", item.getId()));
+            }
             return itemRepository.updateItem(item);
         }
         throw new ItemNotFoundException(String.format("Item with id = %s not found", item.getId()));
