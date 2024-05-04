@@ -48,8 +48,10 @@ public class InMemoryItemRepository implements ItemRepository {
         if (item.getDescription() != null) {
             itemBuilder.description(item.getDescription());
         }
+        if (item.getAvailable() != null) {
+            itemBuilder.available(item.getAvailable());
+        }
         Item toSave = itemBuilder
-                .available(item.isAvailable())
                 .build();
         storage.put(toSave.getId(), toSave);
         return toSave;

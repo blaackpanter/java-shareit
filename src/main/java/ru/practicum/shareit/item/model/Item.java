@@ -13,5 +13,5 @@ public class Item {
     private final long ownerId;
     private final String name;
     private final String description;
-    private final boolean available;
+    private final Boolean available;
 }
