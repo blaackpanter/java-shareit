@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryItemRepository implements ItemRepository {
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
     private final Map<Long, Item> storage = new ConcurrentHashMap<>();
-    private final AtomicLong ID_GENERATOR = new AtomicLong(0);
 
     private long nextId() {
         return ID_GENERATOR.incrementAndGet();

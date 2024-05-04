@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface ItemRepository {
 
     boolean isExist(long id);
+
     Item createItem(Item item);
 
     Item updateItem(Item item);

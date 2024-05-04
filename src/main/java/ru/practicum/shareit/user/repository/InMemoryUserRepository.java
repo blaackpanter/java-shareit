@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
-    private final AtomicLong ID_GENERATOR = new AtomicLong(0);
+    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
     private final Map<Long, User> userByIds = new ConcurrentHashMap<>();
     private final Map<String, User> userByEmails = new ConcurrentHashMap<>();
 
