@@ -20,5 +20,5 @@ public interface ItemRepository {
 
     Collection<Item> getItemsByNameContainsIgnoreCase(String text);
 
-    Collection<Item> getItemsByDescriptionContains(String text);
+    Collection<Item> getItemsByDescriptionContainsIgnoreCase(String text);
 }

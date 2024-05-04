@@ -76,7 +76,7 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Collection<Item> getItemsByDescriptionContains(String text) {
+    public Collection<Item> getItemsByDescriptionContainsIgnoreCase(String text) {
         final String lowerCaseText = text.toLowerCase();
         return storage.values().stream()
                 .filter(item -> item.getDescription().toLowerCase().contains(lowerCaseText))

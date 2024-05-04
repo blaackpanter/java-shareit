@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -59,10 +60,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItemsByText(String text) {
-        final Set<Item> result = new LinkedHashSet<>();
+    public List<Item> searchAvailableItems(String text) {
+        final List<Item> result = new ArrayList<>();
         result.addAll(itemRepository.getItemsByNameContainsIgnoreCase(text));
-        result.addAll(itemRepository.getItemsByDescriptionContains(text));
-        return new ArrayList<>(result);
+        result.addAll(itemRepository.getItemsByDescriptionContainsIgnoreCase(text));
+        return result.stream()
+                .distinct()
+                .filter(Item::isAvailable)
+                .collect(Collectors.toList());
     }
 }

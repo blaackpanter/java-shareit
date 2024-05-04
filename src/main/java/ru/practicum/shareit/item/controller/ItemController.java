@@ -81,8 +81,8 @@ public class ItemController {
     }
 
     @GetMapping("search")
-    public List<ItemDto> getItemsByText(@RequestParam("text") String text) {
-        return itemService.getItemsByText(text)
+    public List<ItemDto> searchAvailableItems(@RequestParam("text") String text) {
+        return itemService.searchAvailableItems(text)
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
