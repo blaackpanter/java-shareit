@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
         result.addAll(itemRepository.getItemsByDescriptionContainsIgnoreCase(text));
         return result.stream()
                 .distinct()
-                .filter(Item::isAvailable)
+                .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }
 }
