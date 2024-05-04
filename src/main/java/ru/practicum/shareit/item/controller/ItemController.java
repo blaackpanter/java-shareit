@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(
-        path = "/items",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
+        path = "/items"
 )
 public class ItemController {
     private final ItemMapper itemMapper;
@@ -35,7 +33,10 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PostMapping
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") long ownerId) {
         return itemMapper.toDto(
                 itemService.createItem(
@@ -48,7 +49,11 @@ public class ItemController {
     }
 
 
-    @PatchMapping("/{itemId}")
+    @PatchMapping(
+            value = "/{itemId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ItemDto updateItem(
             @PathVariable("itemId") long itemId,
             @RequestBody ItemDto itemDto,

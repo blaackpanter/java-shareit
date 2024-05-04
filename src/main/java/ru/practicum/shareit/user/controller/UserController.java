@@ -19,9 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(
-        path = "/users",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
+        path = "/users"
 )
 public class UserController {
     private final UserService userService;
@@ -48,12 +46,18 @@ public class UserController {
         );
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public UserDto deleteUser(@PathVariable("id") long userId) {
         return userMapper.toDto(userService.deleteUser(userId));
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public UserDto updateUser(@PathVariable("id") long userId, @RequestBody UserDto userDto) {
         return userMapper.toDto(
                 userService.updateUser(
