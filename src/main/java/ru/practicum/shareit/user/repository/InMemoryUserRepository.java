@@ -47,7 +47,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User updateUser(User user) {
-        final User prev = userByIds.remove(user.getId());
+        final User prev = userByIds.get(user.getId());
         if (prev == null) {
             throw new UserNotFoundException(String.format("User with id = %s not found", user.getId()));
         }
@@ -64,6 +64,7 @@ public class InMemoryUserRepository implements UserRepository {
         }
         User toSave = prevBuilder.build();
         userByEmails.remove(prev.getEmail());
+        userByIds.remove(user.getId());
         save(toSave);
         return toSave;
     }

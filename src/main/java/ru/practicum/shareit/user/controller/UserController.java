@@ -47,10 +47,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping(value = "/{id}",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @DeleteMapping(value = "/{id}")
     public UserDto deleteUser(@PathVariable("id") long userId) {
         return userMapper.toDto(userService.deleteUser(userId));
     }
