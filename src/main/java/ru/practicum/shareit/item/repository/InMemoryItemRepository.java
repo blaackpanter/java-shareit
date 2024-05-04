@@ -22,6 +22,11 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
+    public boolean isExist(long id) {
+        return storage.containsKey(id);
+    }
+
+    @Override
     public Item createItem(Item item) {
         Item toSave = item.toBuilder()
                 .id(nextId())

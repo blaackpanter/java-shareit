@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private boolean isExist(long id) {
-
+        return itemRepository.isExist(id);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
         if (userService.isExist(ownerId)) {
             return itemRepository.getItemsByOwner(ownerId);
         }
-        throw new UserNotFoundException(String.format("User with id = %s not found", item.getId()));
+        throw new UserNotFoundException(String.format("User with id = %s not found", ownerId));
     }
 
     @Override
