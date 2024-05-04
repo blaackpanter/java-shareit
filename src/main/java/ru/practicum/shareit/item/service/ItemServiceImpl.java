@@ -9,7 +9,9 @@ import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -58,9 +60,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsByText(String text) {
-        final List<Item> result = new ArrayList<>();
+        final Set<Item> result = new LinkedHashSet<>();
         result.addAll(itemRepository.getItemsByNameContainsIgnoreCase(text));
         result.addAll(itemRepository.getItemsByDescriptionContains(text));
-        return result;
+        return new ArrayList<>(result);
     }
 }
