@@ -27,7 +27,6 @@ public class UserMapper {
     }
 
     public User fromUpdateRequest(UserDto request, long id) {
-        validate(request);
         final User.UserBuilder userBuilder = User.builder()
                 .id(id);
         if (request.getName() != null) {
