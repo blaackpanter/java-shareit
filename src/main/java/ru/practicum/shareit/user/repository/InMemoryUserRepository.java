@@ -53,13 +53,13 @@ public class InMemoryUserRepository implements UserRepository {
         }
         User.UserBuilder prevBuilder = prev.toBuilder();
         if (user.getName() != null) {
+            prevBuilder.name(user.getName());
+        }
+        if (user.getEmail() != null) {
             User prevByEmail = userByEmails.get(user.getEmail());
             if (prevByEmail != null && prevByEmail.getId() != user.getId()) {
                 throw new ConflictUserEmailException(String.format("User with email %s already exist", user.getEmail()));
             }
-            prevBuilder.name(user.getName());
-        }
-        if (user.getEmail() != null) {
             prevBuilder.email(user.getEmail());
         }
         User toSave = prevBuilder.build();
