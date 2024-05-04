@@ -11,6 +11,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
+import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
@@ -30,6 +31,11 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = ConflictUserEmailException.class)
     protected ResponseEntity<Object> handleCOnflict(RuntimeException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value = UserNotFoundException.class)
+    protected ResponseEntity<Object> userNotFound(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 }
