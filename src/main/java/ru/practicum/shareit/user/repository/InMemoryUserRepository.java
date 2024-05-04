@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.repository;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserAlreadyExistException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -49,6 +50,9 @@ public class InMemoryUserRepository implements UserRepository {
         final User prev = userByIds.remove(user.getId());
         if (prev == null) {
             throw new UserNotFoundException(String.format("User with id = %s not found", user.getId()));
+        }
+        if (prev.getEmail().equals(user.getEmail())) {
+            throw new ConflictUserEmailException(String.format("Email already is %s", user.getEmail()));
         }
         User.UserBuilder prevBuilder = prev.toBuilder();
         if (user.getName() != null) {
