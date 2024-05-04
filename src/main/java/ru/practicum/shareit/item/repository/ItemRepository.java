@@ -18,7 +18,7 @@ public interface ItemRepository {
 
     List<Item> getItemsByOwner(long ownerId);
 
-    Collection<Item> getItemsByNameContains(String text);
+    Collection<Item> getItemsByNameContainsIgnoreCase(String text);
 
     Collection<Item> getItemsByDescriptionContains(String text);
 }

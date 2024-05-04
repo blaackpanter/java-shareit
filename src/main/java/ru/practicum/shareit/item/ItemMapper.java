@@ -18,6 +18,22 @@ public class ItemMapper {
                 .build();
     }
 
+    public Item fromUpdateDto(ItemDto itemDto, long ownerId) {
+        Item.ItemBuilder itemBuilder = Item.builder()
+                .ownerId(ownerId);
+        if (itemDto.getAvailable() != null) {
+            itemBuilder.available(itemDto.getAvailable());
+        }
+        if (itemDto.getName() != null && !itemDto.getName().isBlank()) {
+            itemBuilder.name(itemDto.getName());
+        }
+        if (itemDto.getDescription() != null && !itemDto.getDescription().isBlank()) {
+            itemBuilder.description(itemDto.getDescription());
+        }
+        return itemBuilder
+                .build();
+    }
+
     private void validate(ItemDto itemDto, long ownerId) {
         if (itemDto.getName() == null || itemDto.getName().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is null or blank");

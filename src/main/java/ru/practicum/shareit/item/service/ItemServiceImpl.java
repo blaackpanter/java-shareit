@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getItemsByText(String text) {
         final List<Item> result = new ArrayList<>();
-        result.addAll(itemRepository.getItemsByNameContains(text));
+        result.addAll(itemRepository.getItemsByNameContainsIgnoreCase(text));
         result.addAll(itemRepository.getItemsByDescriptionContains(text));
         return result;
     }

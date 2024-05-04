@@ -68,16 +68,18 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Collection<Item> getItemsByNameContains(String text) {
+    public Collection<Item> getItemsByNameContainsIgnoreCase(String text) {
+        final String lowerCaseText = text.toLowerCase();
         return storage.values().stream()
-                .filter(item -> item.getName().contains(text))
+                .filter(item -> item.getName().toLowerCase().contains(lowerCaseText))
                 .collect(Collectors.toList());
     }
 
     @Override
     public Collection<Item> getItemsByDescriptionContains(String text) {
+        final String lowerCaseText = text.toLowerCase();
         return storage.values().stream()
-                .filter(item -> item.getDescription().contains(text))
+                .filter(item -> item.getDescription().toLowerCase().contains(lowerCaseText))
                 .collect(Collectors.toList());
     }
 }

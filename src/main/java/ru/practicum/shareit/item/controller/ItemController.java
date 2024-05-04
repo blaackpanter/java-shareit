@@ -59,7 +59,7 @@ public class ItemController {
             @RequestBody ItemDto itemDto,
             @RequestHeader("X-Sharer-User-Id") long ownerId
     ) {
-        final Item item = itemMapper.fromDto(itemDto, ownerId).toBuilder().id(itemId).build();
+        final Item item = itemMapper.fromUpdateDto(itemDto, ownerId).toBuilder().id(itemId).build();
         return itemMapper.toDto(
                 itemService.updateItem(item)
         );
