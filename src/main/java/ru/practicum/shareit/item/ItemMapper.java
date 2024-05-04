@@ -52,7 +52,7 @@ public class ItemMapper {
     public ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
-                .available(item.isAvailable())
+                .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
                 .build();
