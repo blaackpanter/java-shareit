@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -83,10 +84,12 @@ public class ItemController {
             final LocalDateTime now = LocalDateTime.now();
             lastBooking = bookingForItem.stream()
                     .filter(b -> b.getStart().isBefore(now))
+                    .filter(b -> b.getStatus() != BookingStatus.REJECTED)
                     .max(Comparator.comparing(Booking::getEnd))
                     .orElse(null);
             nextBooking = bookingForItem.stream()
                     .filter(b -> b.getStart().isAfter(now))
+                    .filter(b -> b.getStatus() != BookingStatus.REJECTED)
                     .min(Comparator.comparing(Booking::getStart))
                     .orElse(null);
         } else {
