@@ -3,7 +3,9 @@ package ru.practicum.shareit.item;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
@@ -56,6 +58,23 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
+                .build();
+    }
+
+    public CommentDto toCommentDto(Comment comment) {
+        return CommentDto.builder()
+                .id(comment.getId())
+                .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
+                .text(comment.getText())
+                .build();
+    }
+
+    public Comment fromAddComment(long authorId, long itemId, CommentDto commentDTO) {
+        return Comment.builder()
+                .author(User.builder().id(authorId).build())
+                .item(Item.builder().id(itemId).build())
+                .text(commentDTO.getText())
                 .build();
     }
 }

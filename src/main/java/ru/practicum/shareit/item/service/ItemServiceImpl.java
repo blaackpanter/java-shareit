@@ -2,14 +2,19 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +23,20 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final BookingService bookingService;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemRepository itemRepository, UserService userService) {
+    public ItemServiceImpl(
+            ItemRepository itemRepository,
+            UserService userService,
+            BookingService bookingService,
+            CommentRepository commentRepository
+    ) {
         this.itemRepository = itemRepository;
         this.userService = userService;
+        this.bookingService = bookingService;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -77,5 +91,21 @@ public class ItemServiceImpl implements ItemService {
                 .distinct()
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Comment addComment(Comment comment) {
+        final Item item = getItem(comment.getItem().getId());
+        final Booking booking = bookingService.getBooking(item, comment.getAuthor().getId());
+        if (booking.getStart().isAfter(LocalDateTime.now())) {
+            throw new RuntimeException("Можно оставлять отзыв только после начала броинрования");
+        }
+        comment.setItem(item);
+        comment.setAuthor(booking.getBooker());
+        comment.setCreated(LocalDateTime.now());
+        final Comment saved = commentRepository.save(comment);
+        item.getComments().add(saved);
+        itemRepository.save(item);
+        return saved;
     }
 }

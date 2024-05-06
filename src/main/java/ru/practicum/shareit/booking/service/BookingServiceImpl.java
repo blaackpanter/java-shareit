@@ -145,4 +145,14 @@ public class BookingServiceImpl implements BookingService {
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public Booking getBooking(Item item, long bookerId) {
+        return bookingRepository.findByBookerIdAndItemId(bookerId, item.getId())
+                .orElseThrow(
+                        () -> new BookerNotFoundException(
+                                String.format("Пользователь %s не бронировал предмет %s", bookerId, item)
+                        )
+                );
+    }
 }

@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.item.ItemMapper;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,5 +92,11 @@ public class ItemController {
                 .stream()
                 .map(itemMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                                 @RequestBody @Valid CommentDto commentDTO) {
+        return itemMapper.toCommentDto(itemService.addComment(itemMapper.fromAddComment(userId, itemId, commentDTO)));
     }
 }
