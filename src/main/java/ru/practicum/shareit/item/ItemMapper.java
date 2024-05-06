@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +63,11 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
-                .comments(item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList()))
+                .comments(
+                        item.getComments() == null ?
+                                Collections.emptyList() :
+                                item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList())
+                )
                 .build();
     }
 
