@@ -51,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
         if (item.getAvailable() != null) {
             prev.setAvailable(item.getAvailable());
         }
-        return itemRepository.save(item);
+        return itemRepository.save(prev);
     }
 
     @Override
