@@ -71,7 +71,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public ItemDto toDto(Item item, Booking last, Booking next, boolean isOwner) {
+    public ItemDto toDto(Item item, Booking last, Booking next) {
         final ItemDto.ItemDtoBuilder builder = ItemDto.builder()
                 .id(item.getId())
                 .available(item.getAvailable())
@@ -81,17 +81,13 @@ public class ItemMapper {
         if (last != null) {
             final ShortBookingDto.ShortBookingDtoBuilder lastBooking = ShortBookingDto.builder();
             lastBooking.id(last.getId());
-            if (isOwner) {
-                lastBooking.bookerId(last.getBooker().getId());
-            }
+            lastBooking.bookerId(last.getBooker().getId());
             builder.lastBooking(lastBooking.build());
         }
         if (next != null) {
             final ShortBookingDto.ShortBookingDtoBuilder nextBooking = ShortBookingDto.builder();
             nextBooking.id(next.getId());
-            if (isOwner) {
-                nextBooking.bookerId(next.getBooker().getId());
-            }
+            nextBooking.bookerId(next.getBooker().getId());
             builder.nextBooking(nextBooking.build());
         }
         return builder.build();

@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -58,7 +57,6 @@ public class ItemController {
         );
     }
 
-
     @PatchMapping(
             value = "/{itemId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -79,18 +77,26 @@ public class ItemController {
     public ItemDto getItem(@PathVariable("itemId") long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
         final Item item = itemService.getItem(itemId);
         final List<Booking> bookingForItem = bookingService.getBookingForItem(item);
-        final LocalDateTime now = LocalDateTime.now();
-        final Optional<Booking> lastBooking = bookingForItem.stream()
-                .filter(b -> b.getStart().isBefore(now))
-                .max(Comparator.comparing(Booking::getEnd));
-        final Optional<Booking> nextBooking = bookingForItem.stream()
-                .filter(b -> b.getStart().isAfter(now))
-                .min(Comparator.comparing(Booking::getStart));
+        final Booking lastBooking;
+        final Booking nextBooking;
+        if (userId == item.getOwner().getId()) {
+            final LocalDateTime now = LocalDateTime.now();
+            lastBooking = bookingForItem.stream()
+                    .filter(b -> b.getStart().isBefore(now))
+                    .max(Comparator.comparing(Booking::getEnd))
+                    .orElse(null);
+            nextBooking = bookingForItem.stream()
+                    .filter(b -> b.getStart().isAfter(now))
+                    .min(Comparator.comparing(Booking::getStart))
+                    .orElse(null);
+        } else {
+            lastBooking = null;
+            nextBooking = null;
+        }
         return itemMapper.toDto(
                 item,
-                lastBooking.orElse(null),
-                nextBooking.orElse(null),
-                userId == item.getOwner().getId()
+                lastBooking,
+                nextBooking
         );
     }
 
