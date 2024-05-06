@@ -77,6 +77,10 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getItem(@PathVariable("itemId") long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
         final Item item = itemService.getItem(itemId);
+        return getItemDtoWithBindBooking(userId, item);
+    }
+
+    private ItemDto getItemDtoWithBindBooking(long userId, Item item) {
         final List<Booking> bookingForItem = bookingService.getBookingForItem(item);
         final Booking lastBooking;
         final Booking nextBooking;
@@ -107,18 +111,18 @@ public class ItemController {
     public List<ItemDto> getItemsByOwner(@RequestHeader("X-Sharer-User-Id") long ownerId) {
         return itemService.getItemsByOwner(ownerId)
                 .stream()
-                .map(itemMapper::toDto)
+                .map(item -> getItemDtoWithBindBooking(ownerId, item))
                 .collect(Collectors.toList());
     }
 
     @GetMapping("search")
-    public List<ItemDto> searchAvailableItems(@RequestParam("text") String text) {
+    public List<ItemDto> searchAvailableItems(@RequestParam("text") String text, @RequestHeader("X-Sharer-User-Id") long userId) {
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
         return itemService.searchAvailableItems(text)
                 .stream()
-                .map(itemMapper::toDto)
+                .map(item -> getItemDtoWithBindBooking(userId, item))
                 .collect(Collectors.toList());
     }
 

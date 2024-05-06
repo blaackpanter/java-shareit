@@ -19,6 +19,7 @@ import ru.practicum.shareit.booking.exception.WrongBookingDateException;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.WrongBookingStatusException;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.item.exceptions.WrongCommentDateException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
@@ -62,9 +63,12 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(
-            value = {BookingNotAvailableException.class,
+            value = {
+                    BookingNotAvailableException.class,
                     WrongBookingDateException.class,
-                    WrongBookingStatusException.class}
+                    WrongBookingStatusException.class,
+                    WrongCommentDateException.class
+            }
     )
     protected ResponseEntity<Object> customBadRequest(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

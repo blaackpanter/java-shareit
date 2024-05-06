@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
+import ru.practicum.shareit.item.exceptions.WrongCommentDateException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -98,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
         final Item item = getItem(comment.getItem().getId());
         final Booking booking = bookingService.getBooking(item, comment.getAuthor().getId());
         if (booking.getStart().isAfter(LocalDateTime.now())) {
-            throw new RuntimeException("Можно оставлять отзыв только после начала броинрования");
+            throw new WrongCommentDateException("Можно оставлять отзыв только после начала броинрования");
         }
         comment.setItem(item);
         comment.setAuthor(booking.getBooker());
