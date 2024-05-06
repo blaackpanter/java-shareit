@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllByBooker(long bookerId, BookingState bookingState) {
-        if (userService.isExist(bookerId)) {
+        if (!userService.isExist(bookerId)) {
             throw new BookerNotFoundException("Арендатор не найден");
         }
         final LocalDateTime now = LocalDateTime.now();
@@ -114,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllByOwner(long ownerId, BookingState bookingState) {
-        if (userService.isExist(ownerId)) {
+        if (!userService.isExist(ownerId)) {
             throw new BookerNotFoundException("Владелец не найден");
         }
         final LocalDateTime now = LocalDateTime.now();
