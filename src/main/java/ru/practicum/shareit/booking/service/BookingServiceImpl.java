@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
         final List<Booking> result;
         switch (bookingState) {
             case ALL:
-                result = bookingRepository.findAllByBooker(bookerId);
+                result = bookingRepository.findAllByBookerId(bookerId);
                 break;
             case CURRENT:
                 result = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId, now, now);
