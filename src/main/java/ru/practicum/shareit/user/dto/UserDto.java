@@ -1,17 +1,19 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.Email;
+
 @Data
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ItemDto {
+public class UserDto {
     private final long id;
     private final String name;
-    private final String description;
-    private final Boolean available;
+    @Email
+    private final String email;
 }
