@@ -9,6 +9,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ru.practicum.shareit.booking.exception.BookerNotFoundException;
+import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
+import ru.practicum.shareit.booking.exception.ForbiddenBookingException;
+import ru.practicum.shareit.booking.exception.WrongBookerException;
+import ru.practicum.shareit.booking.exception.WrongBookingDateException;
+import ru.practicum.shareit.booking.exception.WrongBookingIdException;
+import ru.practicum.shareit.booking.exception.WrongBookingStatusException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
@@ -23,19 +30,28 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    @ExceptionHandler(value = WrongOwnerIdException.class)
-    protected ResponseEntity<Object> handleWrongOwnerId(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "You are not an owner. " + ex.getMessage();
+    @ExceptionHandler(value = {WrongOwnerIdException.class, ForbiddenBookingException.class})
+    protected ResponseEntity<Object> customForbidden(RuntimeException ex, WebRequest request) {
+        String bodyOfResponse = "You dont have permission. " + ex.getMessage();
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = ConflictUserEmailException.class)
-    protected ResponseEntity<Object> handleCOnflict(RuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleConflict(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(value = UserNotFoundException.class)
-    protected ResponseEntity<Object> userNotFound(RuntimeException ex, WebRequest request) {
+    @ExceptionHandler(value = {UserNotFoundException.class, BookerNotFoundException.class})
+    protected ResponseEntity<Object> customNotFound(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(
+            value = {BookingNotAvailableException.class, WrongBookerException.class,
+                    WrongBookingDateException.class, WrongBookingIdException.class,
+                    WrongBookingStatusException.class}
+    )
+    protected ResponseEntity<Object> customBadRequest(RuntimeException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

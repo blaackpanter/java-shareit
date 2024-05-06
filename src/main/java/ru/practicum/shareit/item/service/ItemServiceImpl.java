@@ -7,11 +7,11 @@ import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,38 +27,43 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(Item item) {
-        if (userService.isExist(item.getOwnerId())) {
-            return itemRepository.createItem(item);
-        }
-        throw new UserNotFoundException(String.format("Cant create item, because user with id = %s not found", item.getId()));
+        final User owner = userService.getUser(item.getOwner().getId());
+        item.setOwner(owner);
+        return itemRepository.save(item);
     }
 
     private boolean isExist(long id) {
-        return itemRepository.isExist(id);
+        return itemRepository.existsById(id);
     }
 
     @Override
     public Item updateItem(Item item) {
-        Optional<Item> prev = itemRepository.getItem(item.getId());
-        if (prev.isPresent()) {
-            if (prev.get().getOwnerId() != item.getOwnerId()) {
-                throw new WrongOwnerIdException(String.format("Only owner can update item with id %s", item.getId()));
-            }
-            return itemRepository.updateItem(item);
+        final Item prev = getItem(item.getId());
+        if (prev.getOwner().getId() != item.getOwner().getId()) {
+            throw new WrongOwnerIdException(String.format("Only owner can update item with id %s", item.getId()));
         }
-        throw new ItemNotFoundException(String.format("Item with id = %s not found", item.getId()));
+        if (item.getName() != null) {
+            prev.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            prev.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            prev.setAvailable(item.getAvailable());
+        }
+        return itemRepository.save(item);
     }
 
     @Override
     public Item getItem(long itemId) {
-        return itemRepository.getItem(itemId)
+        return itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(String.format("Item with id = %s not found", itemId)));
     }
 
     @Override
     public List<Item> getItemsByOwner(long ownerId) {
         if (userService.isExist(ownerId)) {
-            return itemRepository.getItemsByOwner(ownerId);
+            return itemRepository.findAllByOwnerId(ownerId);
         }
         throw new UserNotFoundException(String.format("User with id = %s not found", ownerId));
     }
@@ -66,8 +71,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> searchAvailableItems(String text) {
         final List<Item> result = new ArrayList<>();
-        result.addAll(itemRepository.getItemsByNameContainsIgnoreCase(text));
-        result.addAll(itemRepository.getItemsByDescriptionContainsIgnoreCase(text));
+        result.addAll(itemRepository.findAllByNameContainingIgnoreCase(text));
+        result.addAll(itemRepository.findAllByDescriptionContainingIgnoreCase(text));
         return result.stream()
                 .distinct()
                 .filter(Item::getAvailable)

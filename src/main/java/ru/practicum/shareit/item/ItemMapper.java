@@ -5,13 +5,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 @Service
 public class ItemMapper {
     public Item fromDto(ItemDto itemDto, long ownerId) {
         validate(itemDto, ownerId);
         return Item.builder()
-                .ownerId(ownerId)
+                .owner(User.builder().id(ownerId).build())
                 .description(itemDto.getDescription())
                 .name(itemDto.getName())
                 .available(itemDto.getAvailable())
@@ -20,7 +21,7 @@ public class ItemMapper {
 
     public Item fromUpdateDto(ItemDto itemDto, long ownerId) {
         Item.ItemBuilder itemBuilder = Item.builder()
-                .ownerId(ownerId);
+                .owner(User.builder().id(ownerId).build());
         if (itemDto.getAvailable() != null) {
             itemBuilder.available(itemDto.getAvailable());
         }
