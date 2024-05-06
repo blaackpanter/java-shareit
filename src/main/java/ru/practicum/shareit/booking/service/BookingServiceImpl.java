@@ -149,7 +149,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getBooking(Item item, long bookerId) {
-        return bookingRepository.findByBookerIdAndItemId(bookerId, item.getId())
+        return bookingRepository.findFirstByBookerIdAndItemIdOrderByStart(bookerId, item.getId())
                 .orElseThrow(
                         () -> new BookerNotFoundException(
                                 String.format("Пользователь %s не бронировал предмет %s", bookerId, item)
