@@ -87,7 +87,7 @@ public class ItemMapper {
             if (isOwner) {
                 nextBooking.bookerId(next.getBooker().getId());
             }
-            builder.lastBooking(nextBooking.build());
+            builder.nextBooking(nextBooking.build());
         }
         return builder.build();
     }
