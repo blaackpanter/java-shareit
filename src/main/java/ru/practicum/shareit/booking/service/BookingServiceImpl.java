@@ -108,7 +108,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new RuntimeException(String.format("Неизвестное состояние бронирования %s", bookingState));
         }
         return result.stream()
-                .sorted(Comparator.comparing(Booking::getStart))
+                .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -142,7 +142,7 @@ public class BookingServiceImpl implements BookingService {
                 throw new RuntimeException(String.format("Неизвестное состояние бронирования %s", bookingState));
         }
         return result.stream()
-                .sorted(Comparator.comparing(Booking::getStart))
+                .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .collect(Collectors.toList());
     }
 }
