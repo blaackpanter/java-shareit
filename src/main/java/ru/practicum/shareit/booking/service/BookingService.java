@@ -18,4 +18,6 @@ public interface BookingService {
     List<Booking> getAllByOwner(long ownerId, BookingState bookingState);
 
     Booking getBooking(Item item, long bookerId);
+
+    List<Booking> getBookingForItem(Item item);
 }

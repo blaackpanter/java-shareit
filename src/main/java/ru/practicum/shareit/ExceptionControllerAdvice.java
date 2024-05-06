@@ -16,12 +16,14 @@ import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
 import ru.practicum.shareit.booking.exception.ForbiddenBookingException;
 import ru.practicum.shareit.booking.exception.WrongBookerException;
 import ru.practicum.shareit.booking.exception.WrongBookingDateException;
-import ru.practicum.shareit.booking.exception.WrongBookingIdException;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.WrongBookingStatusException;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
+
+import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
@@ -33,7 +35,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    @ExceptionHandler(value = {WrongOwnerIdException.class, ForbiddenBookingException.class})
+    @ExceptionHandler(value = {WrongOwnerIdException.class})
     protected ResponseEntity<Object> customForbidden(RuntimeException ex, WebRequest request) {
         String bodyOfResponse = "You dont have permission. " + ex.getMessage();
         return new ResponseEntity<>(bodyOfResponse, HttpStatus.FORBIDDEN);
@@ -47,17 +49,21 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(final RuntimeException e) {
-        return new ResponseEntity<>("Unknown state: UNSUPPORTED_STATUS", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Map.of("error", "Unknown state: UNSUPPORTED_STATUS"), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {UserNotFoundException.class, BookerNotFoundException.class, ItemNotFoundException.class})
+    @ExceptionHandler(
+            value = {UserNotFoundException.class, BookerNotFoundException.class,
+                    ItemNotFoundException.class, BookingNotFoundException.class,
+                    ForbiddenBookingException.class, WrongBookerException.class}
+    )
     protected ResponseEntity<Object> customNotFound(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(
-            value = {BookingNotAvailableException.class, WrongBookerException.class,
-                    WrongBookingDateException.class, WrongBookingIdException.class,
+            value = {BookingNotAvailableException.class,
+                    WrongBookingDateException.class,
                     WrongBookingStatusException.class}
     )
     protected ResponseEntity<Object> customBadRequest(RuntimeException ex, WebRequest request) {

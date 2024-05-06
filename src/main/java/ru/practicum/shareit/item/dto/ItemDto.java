@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.List;
+
 @Data
 @Builder
 @Jacksonized
@@ -14,4 +16,7 @@ public class ItemDto {
     private final String name;
     private final String description;
     private final Boolean available;
+    private final ShortBookingDto lastBooking;
+    private final ShortBookingDto nextBooking;
+    private final List<CommentDto> comments;
 }

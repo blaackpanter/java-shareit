@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.exception.BookerNotFoundException;
 import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.exception.ForbiddenBookingException;
 import ru.practicum.shareit.booking.exception.WrongBookerException;
-import ru.practicum.shareit.booking.exception.WrongBookingIdException;
 import ru.practicum.shareit.booking.exception.WrongBookingStatusException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
@@ -54,7 +54,7 @@ public class BookingServiceImpl implements BookingService {
 
     private Booking getById(long bookingId) {
         return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new WrongBookingIdException(String.format("Не найдено бронирование с id %s", bookingId)));
+                .orElseThrow(() -> new BookingNotFoundException(String.format("Не найдено бронирование с id %s", bookingId)));
     }
 
     @Override
@@ -155,5 +155,10 @@ public class BookingServiceImpl implements BookingService {
                                 String.format("Пользователь %s не бронировал предмет %s", bookerId, item)
                         )
                 );
+    }
+
+    @Override
+    public List<Booking> getBookingForItem(Item item) {
+        return bookingRepository.findAllByItemId(item.getId());
     }
 }

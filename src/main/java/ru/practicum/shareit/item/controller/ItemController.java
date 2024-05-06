@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -18,8 +20,11 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,11 +34,13 @@ import java.util.stream.Collectors;
 public class ItemController {
     private final ItemMapper itemMapper;
     private final ItemService itemService;
+    private final BookingService bookingService;
 
     @Autowired
-    public ItemController(ItemMapper itemMapper, ItemService itemService) {
+    public ItemController(ItemMapper itemMapper, ItemService itemService, BookingService bookingService) {
         this.itemMapper = itemMapper;
         this.itemService = itemService;
+        this.bookingService = bookingService;
     }
 
     @PostMapping(
@@ -69,9 +76,21 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable("itemId") long itemId) {
+    public ItemDto getItem(@PathVariable("itemId") long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
+        final Item item = itemService.getItem(itemId);
+        final List<Booking> bookingForItem = bookingService.getBookingForItem(item);
+        final LocalDateTime now = LocalDateTime.now();
+        final Optional<Booking> lastBooking = bookingForItem.stream()
+                .filter(b -> b.getStart().isBefore(now))
+                .max(Comparator.comparing(Booking::getEnd));
+        final Optional<Booking> nextBooking = bookingForItem.stream()
+                .filter(b -> b.getStart().isAfter(now))
+                .min(Comparator.comparing(Booking::getStart));
         return itemMapper.toDto(
-                itemService.getItem(itemId)
+                item,
+                lastBooking.orElse(null),
+                nextBooking.orElse(null),
+                userId == item.getOwner().getId()
         );
     }
 

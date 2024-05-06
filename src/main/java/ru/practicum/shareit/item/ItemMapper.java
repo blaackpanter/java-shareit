@@ -3,11 +3,15 @@ package ru.practicum.shareit.item;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ShortBookingDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
+
+import java.util.stream.Collectors;
 
 @Service
 public class ItemMapper {
@@ -58,7 +62,34 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
+                .comments(item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList()))
                 .build();
+    }
+
+    public ItemDto toDto(Item item, Booking last, Booking next, boolean isOwner) {
+        final ItemDto.ItemDtoBuilder builder = ItemDto.builder()
+                .id(item.getId())
+                .available(item.getAvailable())
+                .description(item.getDescription())
+                .comments(item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList()))
+                .name(item.getName());
+        if (last != null) {
+            final ShortBookingDto.ShortBookingDtoBuilder lastBooking = ShortBookingDto.builder();
+            lastBooking.id(last.getId());
+            if (isOwner) {
+                lastBooking.bookerId(last.getBooker().getId());
+            }
+            builder.lastBooking(lastBooking.build());
+        }
+        if (next != null) {
+            final ShortBookingDto.ShortBookingDtoBuilder nextBooking = ShortBookingDto.builder();
+            nextBooking.id(next.getId());
+            if (isOwner) {
+                nextBooking.bookerId(next.getBooker().getId());
+            }
+            builder.lastBooking(nextBooking.build());
+        }
+        return builder.build();
     }
 
     public CommentDto toCommentDto(Comment comment) {
