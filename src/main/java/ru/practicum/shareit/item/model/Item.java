@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,5 +42,5 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
-    private Set<Comment> comments;
+    private List<Comment> comments;
 }
