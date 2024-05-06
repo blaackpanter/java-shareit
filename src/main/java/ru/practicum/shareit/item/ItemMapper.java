@@ -63,6 +63,15 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
+                .build();
+    }
+
+    public ItemDto toDtoWithComments(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .available(item.getAvailable())
+                .description(item.getDescription())
+                .name(item.getName())
                 .comments(
                         item.getComments() == null ?
                                 Collections.emptyList() :

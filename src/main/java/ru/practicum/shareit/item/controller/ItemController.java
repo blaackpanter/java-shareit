@@ -48,7 +48,7 @@ public class ItemController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ItemDto createItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") long ownerId) {
-        return itemMapper.toDto(
+        return itemMapper.toDtoWithComments(
                 itemService.createItem(
                         itemMapper.fromDto(
                                 itemDto,
@@ -69,7 +69,7 @@ public class ItemController {
             @RequestHeader("X-Sharer-User-Id") long ownerId
     ) {
         final Item item = itemMapper.fromUpdateDto(itemDto, ownerId).toBuilder().id(itemId).build();
-        return itemMapper.toDto(
+        return itemMapper.toDtoWithComments(
                 itemService.updateItem(item)
         );
     }
