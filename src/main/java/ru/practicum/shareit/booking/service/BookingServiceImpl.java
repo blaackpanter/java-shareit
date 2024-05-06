@@ -47,6 +47,7 @@ public class BookingServiceImpl implements BookingService {
         final User booker = userService.getUser(booking.getBooker().getId());
         booking.setItem(item);
         booking.setBooker(booker);
+        booking.setStatus(BookingStatus.WAITING);
         return bookingRepository.save(booking);
     }
 
