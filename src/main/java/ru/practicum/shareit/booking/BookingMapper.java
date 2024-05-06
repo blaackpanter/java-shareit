@@ -31,7 +31,7 @@ public class BookingMapper {
             );
         }
         return Booking.builder()
-                .item(Item.builder().id(bookingDto.getId()).build())
+                .item(Item.builder().id(bookingDto.getItemId()).build())
                 .booker(User.builder().id(bookerId).build())
                 .start(bookingDto.getStart())
                 .end(bookingDto.getEnd())
