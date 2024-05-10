@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.util.List;
 

@@ -13,5 +13,6 @@ public interface ItemRequestService {
     List<ItemRequest> getByRequester(long requesterId, PageRequest pageRequest);
 
     ItemRequest get(long requesterId, long requestId);
+
     ItemRequest get(long requestId);
 }
