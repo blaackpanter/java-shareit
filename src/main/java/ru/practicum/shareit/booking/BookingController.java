@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,11 +20,13 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/bookings")
+@Validated
 public class BookingController {
     public static final String USER_ID = "X-Sharer-User-Id";
     private final BookingService bookingService;
@@ -53,9 +57,11 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllByBooker(@RequestHeader(USER_ID) long bookerId,
+                                           @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                           @RequestParam(defaultValue = "10") @Positive int size,
                                            @RequestParam(name = "state", defaultValue = "ALL")
                                            BookingState bookingState) {
-        return bookingService.getAllByBooker(bookerId, bookingState)
+        return bookingService.getAllByBooker(bookerId, bookingState, PageRequest.of(from / size, size))
                 .stream()
                 .map(bookingMapper::toDto)
                 .collect(Collectors.toList());
@@ -63,9 +69,11 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllByOwner(@RequestHeader(USER_ID) long ownerId,
+                                          @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                          @RequestParam(defaultValue = "10") @Positive int size,
                                           @RequestParam(name = "state", defaultValue = "ALL")
                                           BookingState bookingState) {
-        return bookingService.getAllByOwner(ownerId, bookingState)
+        return bookingService.getAllByOwner(ownerId, bookingState, PageRequest.of(from / size, size))
                 .stream()
                 .map(bookingMapper::toDto)
                 .collect(Collectors.toList());

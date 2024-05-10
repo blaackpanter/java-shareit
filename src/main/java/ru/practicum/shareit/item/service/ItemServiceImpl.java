@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -26,24 +28,29 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingService bookingService;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     @Autowired
     public ItemServiceImpl(
             ItemRepository itemRepository,
             UserService userService,
-            BookingService bookingService,
+            ItemRequestService itemRequestService, BookingService bookingService,
             CommentRepository commentRepository
     ) {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.bookingService = bookingService;
         this.commentRepository = commentRepository;
+        this.itemRequestService = itemRequestService;
     }
 
     @Override
     public Item createItem(Item item) {
         final User owner = userService.getUser(item.getOwner().getId());
         item.setOwner(owner);
+        if (item.getRequest() != null) {
+            item.setRequest(itemRequestService.get(item.getRequest().getId()));
+        }
         return itemRepository.save(item);
     }
 

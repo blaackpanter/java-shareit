@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public class ItemDto {
     private final ShortBookingDto lastBooking;
     private final ShortBookingDto nextBooking;
     private final List<CommentDto> comments;
+    private final Long requestId;
 }

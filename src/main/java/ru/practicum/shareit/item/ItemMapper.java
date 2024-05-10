@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ShortBookingDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.Collections;
@@ -18,11 +19,13 @@ import java.util.stream.Collectors;
 public class ItemMapper {
     public Item fromDto(ItemDto itemDto, long ownerId) {
         validate(itemDto, ownerId);
+        final Long requestId = itemDto.getRequestId();
         return Item.builder()
                 .owner(User.builder().id(ownerId).build())
                 .description(itemDto.getDescription())
                 .name(itemDto.getName())
                 .available(itemDto.getAvailable())
+                .request(requestId != null ? ItemRequest.builder().id(requestId).build() : null)
                 .build();
     }
 
@@ -63,6 +66,7 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .name(item.getName())
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
@@ -77,6 +81,7 @@ public class ItemMapper {
                                 Collections.emptyList() :
                                 item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList())
                 )
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
@@ -86,6 +91,7 @@ public class ItemMapper {
                 .available(item.getAvailable())
                 .description(item.getDescription())
                 .comments(item.getComments().stream().map(this::toCommentDto).collect(Collectors.toList()))
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .name(item.getName());
         if (last != null) {
             final ShortBookingDto.ShortBookingDtoBuilder lastBooking = ShortBookingDto.builder();
