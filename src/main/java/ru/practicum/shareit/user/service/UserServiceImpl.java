@@ -2,11 +2,13 @@ package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -19,38 +21,45 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        return userRepository.createUser(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(User user) {
-        if (isExist(user.getId())) {
-            return userRepository.updateUser(user);
+        final User existedUser = getUser(user.getId());
+        if (user.getName() != null) {
+            existedUser.setName(user.getName());
         }
-        throw new UserNotFoundException(String.format("User with id = %s not found", user.getId()));
+        if (user.getEmail() != null) {
+            final Optional<User> userByEmail = userRepository.getUserByEmail(user.getEmail());
+            if (userByEmail.isPresent() && userByEmail.get().getId() != user.getId()) {
+                throw new ConflictUserEmailException(String.format("User with email %s already exist", user.getEmail()));
+            }
+            existedUser.setEmail(user.getEmail());
+        }
+        return userRepository.save(existedUser);
     }
 
     @Override
     public User deleteUser(long id) {
-        if (isExist(id)) {
-            return userRepository.deleteUser(id);
-        }
-        throw new UserNotFoundException(String.format("User with id = %s not found", id));
+        final User user = getUser(id);
+        userRepository.delete(user);
+        return user;
     }
 
     @Override
     public User getUser(long id) {
-        return userRepository.getUser(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id = %s not found", id)));
     }
 
     @Override
     public boolean isExist(long id) {
-        return userRepository.isExist(id);
+        return userRepository.existsById(id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        return userRepository.findAll();
     }
 }

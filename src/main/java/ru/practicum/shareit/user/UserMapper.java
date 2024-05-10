@@ -29,10 +29,10 @@ public class UserMapper {
     public User fromUpdateRequest(UserDto request, long id) {
         final User.UserBuilder userBuilder = User.builder()
                 .id(id);
-        if (request.getName() != null) {
+        if (request.getName() != null && !request.getName().isBlank()) {
             userBuilder.name(request.getName());
         }
-        if (request.getEmail() != null) {
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
             userBuilder.email(request.getEmail());
         }
         return userBuilder

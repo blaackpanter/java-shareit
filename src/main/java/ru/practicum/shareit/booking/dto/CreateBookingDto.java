@@ -1,25 +1,24 @@
 package ru.practicum.shareit.booking.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
-import ru.practicum.shareit.booking.model.BookingStatus;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
 @Builder
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookingDto {
-    private long id;
+public class CreateBookingDto {
+    private long itemId;
+    @NotNull
+    @Future
     private LocalDateTime start;
+    @NotNull
+    @Future
     private LocalDateTime end;
-    private ItemDto item;
-    private UserDto booker;
-    private BookingStatus status;
 }
