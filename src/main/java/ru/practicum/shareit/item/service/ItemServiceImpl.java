@@ -33,7 +33,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemServiceImpl(
             ItemRepository itemRepository,
             UserService userService,
-            ItemRequestService itemRequestService, BookingService bookingService,
+            ItemRequestService itemRequestService,
+            BookingService bookingService,
             CommentRepository commentRepository
     ) {
         this.itemRepository = itemRepository;
@@ -51,10 +52,6 @@ public class ItemServiceImpl implements ItemService {
             item.setRequest(itemRequestService.get(item.getRequest().getId()));
         }
         return itemRepository.save(item);
-    }
-
-    private boolean isExist(long id) {
-        return itemRepository.existsById(id);
     }
 
     @Override

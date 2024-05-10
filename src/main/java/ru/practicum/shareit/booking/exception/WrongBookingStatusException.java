@@ -4,8 +4,4 @@ public class WrongBookingStatusException extends RuntimeException {
     public WrongBookingStatusException(String message) {
         super(message);
     }
-
-    public WrongBookingStatusException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }
