@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.request.exception.ItemRequestNotFound;
 import ru.practicum.shareit.request.exception.RequesterNotFound;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -25,6 +26,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional
     public ItemRequest create(ItemRequest request) {
         final User user = userService.getUser(request.getRequester().getId());
         return itemRequestRepository.save(
@@ -36,6 +38,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequest> getByRequester(long requesterId) {
         if (!userService.isExist(requesterId)) {
             throw new RequesterNotFound(String.format("Not found requester by %s", requesterId));
@@ -44,6 +47,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ItemRequest> getByRequester(long requesterId, PageRequest pageRequest) {
         if (!userService.isExist(requesterId)) {
             throw new RequesterNotFound(String.format("Not found requester by %s", requesterId));
@@ -52,6 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequest get(long requesterId, long requestId) {
         if (!userService.isExist(requesterId)) {
             throw new RequesterNotFound(String.format("Not found requester by %s", requesterId));
@@ -60,6 +65,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemRequest get(long requestId) {
         return itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> new ItemRequestNotFound(String.format("Not found item request by id %s", requestId)));

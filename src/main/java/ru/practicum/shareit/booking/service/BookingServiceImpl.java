@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.exception.BookerNotFoundException;
 import ru.practicum.shareit.booking.exception.BookingNotAvailableException;
 import ru.practicum.shareit.booking.exception.BookingNotFoundException;
@@ -36,6 +37,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public Booking create(Booking booking) {
         final Item item = itemService.getItem(booking.getItem().getId());
         if (!item.getAvailable()) {
@@ -57,6 +59,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public Booking approve(long ownerId, long bookingId, boolean approved) {
         final Booking booking = getById(bookingId);
         if (booking.getItem().getOwner().getId() != ownerId) {
@@ -70,6 +73,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking get(long userId, long bookingId) {
         final Booking booking = getById(bookingId);
         if (userId != booking.getBooker().getId() && userId != booking.getItem().getOwner().getId()) {
@@ -79,6 +83,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Booking> getAllByBooker(long bookerId, BookingState bookingState, PageRequest pageRequest) {
         if (!userService.isExist(bookerId)) {
             throw new BookerNotFoundException("Арендатор не найден");
@@ -111,6 +116,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Booking> getAllByOwner(long ownerId, BookingState bookingState, PageRequest pageRequest) {
         if (!userService.isExist(ownerId)) {
             throw new BookerNotFoundException("Владелец не найден");
@@ -143,6 +149,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Booking getBooking(Item item, long bookerId) {
         return bookingRepository.findFirstByBookerIdAndItemIdOrderByStart(bookerId, item.getId())
                 .orElseThrow(
@@ -153,6 +160,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Booking> getBookingForItem(Item item) {
         return bookingRepository.findAllByItemId(item.getId());
     }

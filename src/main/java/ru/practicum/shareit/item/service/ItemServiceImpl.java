@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
@@ -45,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item createItem(Item item) {
         final User owner = userService.getUser(item.getOwner().getId());
         item.setOwner(owner);
@@ -55,6 +57,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item updateItem(Item item) {
         final Item prev = getItem(item.getId());
         if (prev.getOwner().getId() != item.getOwner().getId()) {
@@ -73,12 +76,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Item getItem(long itemId) {
         return itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNotFoundException(String.format("Item with id = %s not found", itemId)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Item> getItemsByOwner(long ownerId) {
         if (userService.isExist(ownerId)) {
             return itemRepository.findAllByOwnerId(ownerId);
@@ -87,6 +92,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Item> searchAvailableItems(String text) {
         final List<Item> result = new ArrayList<>();
         result.addAll(itemRepository.findAllByNameContainingIgnoreCase(text));
@@ -98,6 +104,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment addComment(Comment comment) {
         final Item item = getItem(comment.getItem().getId());
         final Booking booking = bookingService.getBooking(item, comment.getAuthor().getId());
