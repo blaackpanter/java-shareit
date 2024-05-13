@@ -21,6 +21,8 @@ import ru.practicum.shareit.booking.exception.WrongBookingStatusException;
 import ru.practicum.shareit.item.exceptions.ItemNotFoundException;
 import ru.practicum.shareit.item.exceptions.WrongCommentDateException;
 import ru.practicum.shareit.item.exceptions.WrongOwnerIdException;
+import ru.practicum.shareit.request.exception.ItemRequestNotFound;
+import ru.practicum.shareit.request.exception.RequesterNotFound;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 
@@ -56,7 +58,9 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(
             value = {UserNotFoundException.class, BookerNotFoundException.class,
                     ItemNotFoundException.class, BookingNotFoundException.class,
-                    ForbiddenBookingException.class, WrongBookerException.class}
+                    ForbiddenBookingException.class, WrongBookerException.class,
+                    RequesterNotFound.class, ItemRequestNotFound.class
+            }
     )
     protected ResponseEntity<Object> customNotFound(RuntimeException ex, WebRequest request) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);

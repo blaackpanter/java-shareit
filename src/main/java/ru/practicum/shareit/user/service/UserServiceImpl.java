@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.exceptions.ConflictUserEmailException;
 import ru.practicum.shareit.user.exceptions.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -20,11 +21,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
         final User existedUser = getUser(user.getId());
         if (user.getName() != null) {
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User deleteUser(long id) {
         final User user = getUser(id);
         userRepository.delete(user);
@@ -48,17 +52,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User getUser(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id = %s not found", id)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean isExist(long id) {
         return userRepository.existsById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }

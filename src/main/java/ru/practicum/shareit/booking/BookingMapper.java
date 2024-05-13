@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
@@ -15,6 +16,7 @@ public class BookingMapper {
     private final UserMapper userMapper;
     private final ItemMapper itemMapper;
 
+    @Autowired
     public BookingMapper(UserMapper userMapper, ItemMapper itemMapper) {
         this.userMapper = userMapper;
         this.itemMapper = itemMapper;
