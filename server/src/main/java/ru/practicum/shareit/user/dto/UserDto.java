@@ -12,7 +12,6 @@ import javax.validation.constraints.Email;
 @Jacksonized
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
-    //comment
     private final long id;
     private final String name;
     @Email
