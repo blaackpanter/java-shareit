@@ -59,7 +59,7 @@ public class BookingController {
     public List<BookingDto> getAllByBooker(@RequestHeader(USER_ID) long bookerId,
                                            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                            @RequestParam(defaultValue = "10") @Positive int size,
-                                           @RequestParam(name = "bookingStatus", defaultValue = "ALL")
+                                           @RequestParam(name = "state", defaultValue = "ALL")
                                            BookingState bookingState) {
         return bookingService.getAllByBooker(bookerId, bookingState, PageRequest.of(from / size, size))
                 .stream()
@@ -71,7 +71,7 @@ public class BookingController {
     public List<BookingDto> getAllByOwner(@RequestHeader(USER_ID) long ownerId,
                                           @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                           @RequestParam(defaultValue = "10") @Positive int size,
-                                          @RequestParam(name = "bookingStatus", defaultValue = "ALL")
+                                          @RequestParam(name = "state", defaultValue = "ALL")
                                           BookingState bookingState) {
         return bookingService.getAllByOwner(ownerId, bookingState, PageRequest.of(from / size, size))
                 .stream()

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.validation.constraints.Email;
-
 @Data
 @Builder
 @Jacksonized
@@ -14,6 +12,5 @@ import javax.validation.constraints.Email;
 public class UserDto {
     private final long id;
     private final String name;
-    @Email
     private final String email;
 }

@@ -41,7 +41,7 @@ public class ItemClient extends BaseClient {
 
     public ResponseEntity<Object> searchAvailableItems(Long userId, String text) {
         Map<String, Object> parameters = Map.of("text", text);
-        return get("/search?text={text}", userId);
+        return get("/search?text={text}", userId, parameters);
     }
 
     public ResponseEntity<Object> addComment(Long userId, Long itemId, CommentDto commentDto) {

@@ -65,7 +65,7 @@ public class BookingController {
     public ResponseEntity<Object> getAllByBooker(@RequestHeader(USER_ID) long bookerId,
                                                  @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                  @RequestParam(defaultValue = "10") @Positive int size,
-                                                 @RequestParam(name = "bookingStatus", defaultValue = "ALL")
+                                                 @RequestParam(name = "state", defaultValue = "ALL")
                                                  BookingStatus bookingStatus) {
         return bookingClient.getBookingsByBooker(bookerId, bookingStatus, from, size);
     }
@@ -74,7 +74,7 @@ public class BookingController {
     public ResponseEntity<Object> getAllByOwner(@RequestHeader(USER_ID) long ownerId,
                                                 @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                 @RequestParam(defaultValue = "10") @Positive int size,
-                                                @RequestParam(name = "bookingStatus", defaultValue = "ALL")
+                                                @RequestParam(name = "state", defaultValue = "ALL")
                                                 BookingStatus bookingStatus) {
         return bookingClient.getBookingsByOwner(ownerId, bookingStatus, from, size);
     }
