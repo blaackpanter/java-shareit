@@ -86,7 +86,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(readOnly = true)
     public List<Item> getItemsByOwner(long ownerId) {
         if (userService.isExist(ownerId)) {
-            return itemRepository.findAllByOwnerId(ownerId);
+            return itemRepository.findAllByOwnerIdOrderById(ownerId);
         }
         throw new UserNotFoundException(String.format("User with id = %s not found", ownerId));
     }
